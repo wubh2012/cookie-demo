@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+  <h2 id="cookiename"></h2>
+  当前账户的金额是: <span id="spanAmount">{{amount}}</span>
+  <button id="pay">付款</button>
+  <script src="./main.js"></script>
+  <script src="./ajax.js"></script>
+  <script>
+    let btnPay = document.querySelector('#pay')
+    let amount = document.querySelector('#spanAmount')
+
+    btnPay.addEventListener('click', function (e) {
+
+      let randomCallbackName = `xxxxxx${ parseInt(Math.random() * 100000000)}`
+      window[randomCallbackName] = function (r) {
+        console.log('回调结果', r)
+        if (r.success) {
+          amount.innerText = amount.innerText - 1
+        }
+      }
+
+      let xxscript = document.createElement('script')
+      xxscript.src = './pay?callback=' + randomCallbackName
+      document.body.appendChild(xxscript)
+
+      xxscript.onload = function (e) {
+        document.body.removeChild(e.currentTarget)
+      }
+      xxscript.onerror = function (e) {
+        console.log('script onerror', e)
+      }
+    })
+  </script>
+  <script>
+    // let xhr = new XMLHttpRequest()
+    // xhr.open('post', '/pay')
+    // xhr.send()
+    // xhr.onreadystatechange = function () {
+    //   if (xhr.readyState === 4) {
+    //     console.log('服务器已接收到请求，并响应')
+    //     if (xhr.status === 200) {
+    //       console.log('请求成功')
+    //       console.log('响应的结果', xhr.responseText)
+    //     } else if (xhr.status >= 400) {
+    //       console.log('请求失败')
+    //     }
+    //   }
+    // }
+  </script>
+  <script>
+    // 使用 JS 读取 cookie
+    console.log(document.cookie)
+    let allcookie = document.cookie
+    let cookieArr = allcookie.split(';')
+    let hash = {}
+    cookieArr.forEach(item => {
+      let itemArr = item.split('=')
+      hash[itemArr[0].trim()] = itemArr[1]
+    })
+    console.log(hash)
+    cookiename.innerText = hash.email 
+  </script>
+
+</body>
+
+</html>

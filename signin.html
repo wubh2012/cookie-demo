@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>登录</title>
+  <style>
+    * {
+      padding: 0;
+      margin: 0;
+      box-sizing: border-box;
+    }
+
+    .container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      width: 100%;
+      height: 100vh;
+
+
+    }
+
+    .container>form {
+      padding: 10px;
+      border: 1px solid #ddd;
+    }
+
+    .container .row {
+      display: flex;
+      align-items: center;
+      margin: 10px 0;
+    }
+
+    .container .row:last-child {
+      margin-bottom: 0;
+    }
+
+    .row>label {
+      display: inline-block;
+      min-width: 80px;
+    }
+
+    .container .row.button {
+      margin-left: 90px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <form action="/siginin" id="myform" method="POST">
+      <h1>用户注册</h1>
+      <div class="row">
+        <label for="">邮箱</label>
+        <input type="text" name="email" id="email">
+      </div>
+      <div class="row">
+        <label for="">密码</label>
+        <input type="password" name="password" id="password">
+      </div>      
+      <div class="row button">
+        <button type="submit">登录</button> &nbsp; &nbsp;
+        <button type="reset">重置</button>
+      </div>
+    </form>
+  </div>
+  <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+  <script>
+    const log = console.log.bind(console)
+    let $myform = $('#myform')
+
+    let hash = {}
+    $myform.on('submit', function (e) {
+      e.preventDefault()
+      let inputs = ['email', 'password']
+      inputs.forEach(function (name, index) {
+        let value = $myform.find(`input[name=${name}]`).val()
+        hash[name] = value
+      })
+      log(hash)
+      // TODO 验证
+      if (hash.email === '') {
+        alert('请输入邮箱')
+        return
+      }
+      // 提交
+      $.post('/signin', hash)
+        .then((response) => {
+          log(response)
+          if(response.code === 200){
+            window.location.href = './'
+          }
+        }, (error) => {
+          log(error, error.responseJSON)
+          alert(error.responseJSON.message)
+        })
+
+    })
+  </script>
+</body>
+
+</html>
